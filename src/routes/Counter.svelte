@@ -1,6 +1,9 @@
 <script>
 	import { spring } from 'svelte/motion';
-
+	import poland from '$lib/images/poland.png';
+	import europeanUnion from '$lib/images/european-union.png';
+	import euro from '$lib/images/european-union.png';
+	import switzerland from '$lib/images/switzerland.png';
 	let count = 0;
 
 	const displayed_count = spring();
@@ -17,8 +20,65 @@
 	}
 </script>
 
-<div class="counter">
-	<button on:click={() => (count -= 1)} aria-label="Decrease the counter by one">
+<div class="converter">
+	<h1 class="converter__title">Currency Converter</h1>
+	<p class="converter__text">
+		Check live rates, set rate alerts, receive notifications and more.
+	</p>
+	<ul class="converter__exchange">
+		<li class="converter__exchange-item">
+			<div class="converter__exchange-wrapper">
+				<div>
+					<button class="converter__exchange-currency">
+						<span>choose currency</span>
+						<div class="icon"></div>
+					</button>
+					<ul class="converter__exchange-dropdown">
+						<li class="converter__exchange-dropdown-item">
+							<img
+								src={poland}
+								alt="poland"
+								height="30"
+								width="30"
+							/>
+							<span>PLZ</span>
+						</li>
+						<li class="converter__exchange-dropdown-item">
+							<img
+								src={switzerland}
+								alt="switzerland"
+								height="30"
+								width="30"
+							/>
+							<span>CHF</span>
+						</li>
+						<li class="converter__exchange-dropdown-item">
+							<img
+								src={europeanUnion}
+								alt="europeanUnion"
+								height="30"
+								width="30"
+							/>
+							<span>EUR</span>
+						</li>
+					</ul>
+				</div>
+				<div class="converter__exchange-info">
+					<label class="converter__exchange-labels" for="amount">
+						Amount
+					</label>
+					<input
+						id="amount"
+						name="amount"
+						type="text"
+						class="converter__exchange-input"
+						placeholder="1000.00"
+					/>
+				</div>
+			</div>
+		</li>
+	</ul>
+	<!-- <button on:click={() => (count -= 1)} aria-label="Decrease the counter by one">
 		<svg aria-hidden="true" viewBox="0 0 1 1">
 			<path d="M0,0.5 L1,0.5" />
 		</svg>
@@ -35,72 +95,93 @@
 		<svg aria-hidden="true" viewBox="0 0 1 1">
 			<path d="M0,0.5 L1,0.5 M0.5,0 L0.5,1" />
 		</svg>
-	</button>
+	</button> -->
 </div>
 
-<style>
-	.counter {
-		display: flex;
-		border-top: 1px solid rgba(0, 0, 0, 0.1);
-		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-		margin: 1rem 0;
+<style lang="scss">
+	@import '/src/scss/base.scss';
+	@import '/src/scss/reset.scss';
+	.converter__title {
+		color: #1f2261;
+		font-weight: 700;
+		font-size: 35px;
+		margin-bottom: 16px;
 	}
-
-	.counter button {
-		width: 2em;
-		padding: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: 0;
-		background-color: transparent;
-		touch-action: manipulation;
-		font-size: 2rem;
-	}
-
-	.counter button:hover {
-		background-color: var(--color-bg-1);
-	}
-
-	svg {
-		width: 25%;
-		height: 25%;
-	}
-
-	path {
-		vector-effect: non-scaling-stroke;
-		stroke-width: 2px;
-		stroke: #444;
-	}
-
-	.counter-viewport {
-		width: 8em;
-		height: 4em;
-		overflow: hidden;
-		text-align: center;
-		position: relative;
-	}
-
-	.counter-viewport strong {
-		position: absolute;
-		display: flex;
-		width: 100%;
-		height: 100%;
+	.converter__text {
+		color: #808080;
+		font-size: 16px;
 		font-weight: 400;
-		color: var(--color-theme-1);
-		font-size: 4rem;
+		margin-bottom: 32px;
+	}
+	.converter__exchange {
+		background: #ffffff;
+		padding: 10px;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		border-radius: 10px;
+	}
+	.converter__exchange-labels {
+		color: #989898;
+		font-size: 12px;
+		margin-bottom: 10px;
+	}
+	.converter__exchange-input {
+		background: #efefef;
+		padding-bottom: 5px;
+		width: 141px;
+		height: 35px;
+		padding: 5px;
+		border: none;
+		border-radius: 5px;
+		color: #3c3c3c;
+		font-size: 12px;
+		outline: none;
+	}
+	.converter__exchange-currency {
+		background: transparent;
+		border: none;
+		color: #26278d;
+		font-weight: 700;
+		font-size: 14px;
+		width: 123px;
+		height: 45px;
+		display: flex;
 		align-items: center;
-		justify-content: center;
+		justify-content: space-between;
+		cursor: pointer;
 	}
-
-	.counter-digits {
-		position: absolute;
-		width: 100%;
-		height: 100%;
+	.converter__exchange-dropdown-item {
+		background: transparent;
+		border: none;
+		color: #26278d;
+		font-weight: 700;
+		font-size: 14px;
+		width: 123px;
+		height: 45px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		cursor: pointer;
+		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		padding: 5px;
+		padding-right: 38px;
+		border: 5px;
+		margin-bottom: 5px;
 	}
-
-	.hidden {
-		top: -100%;
-		user-select: none;
+	.icon {
+		width: 11px;
+		height: 7px;
+		background-image: url('/src/lib/images/arrow.svg');
+		background-size: cover;
+		background-repeat: no-repeat;
+	}
+	.converter__exchange-wrapper {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 32px;
+	}
+	.converter__exchange-info {
+		display: flex;
+		flex-direction: column;
+		padding-top: 10px;
 	}
 </style>
