@@ -1,23 +1,46 @@
 <script>
-	import { spring } from 'svelte/motion';
 	import poland from '$lib/images/poland.png';
 	import europeanUnion from '$lib/images/european-union.png';
-	import euro from '$lib/images/european-union.png';
 	import switzerland from '$lib/images/switzerland.png';
-	let count = 0;
-
-	const displayed_count = spring();
-	$: displayed_count.set(count);
-	$: offset = modulo($displayed_count, 1);
-
-	/**
-	 * @param {number} n
-	 * @param {number} m
-	 */
-	function modulo(n, m) {
-		// handle negative numbers
-		return ((n % m) + m) % m;
+	let dropDownSale = false;
+	let dropDownPurchase = false;
+	let currencySale = 'choose currency';
+	// @ts-ignore
+	let prevCurrencySale;
+	let currencyPurchase = 'choose currency';
+	let currencesForSale = [
+		{ id: 1, name: 'PLZ', img: poland, alt: '$lib/images/poland.png' },
+		{ id: 2, name: 'CHF', img: europeanUnion, alt: 'europeanUnion' },
+		{ id: 3, name: 'EUR', img: switzerland, alt: 'switzerland' },
+	];
+	let currencesForPurchase = [
+		{ id: 4, name: 'PLZ', img: poland, alt: '$lib/images/poland.png' },
+		{ id: 5, name: 'CHF', img: europeanUnion, alt: 'europeanUnion' },
+		{ id: 6, name: 'EUR', img: switzerland, alt: 'switzerland' },
+	];
+	// @ts-ignore
+	// @ts-ignore
+	$: {
+		// @ts-ignore
+		if (prevCurrencySale && prevCurrencySale !== currencySale) {
+			dropDownSale = false;
+		}
+		prevCurrencySale = currencySale;
 	}
+	const openDropDownSale = () => {
+		dropDownSale = !dropDownSale;
+	};
+	const openDropDownPurchase = () => {
+		dropDownPurchase = !dropDownPurchase;
+	};
+	// @ts-ignore
+	const changeCurrencySale = (param) => {
+		currencySale = param;
+	};
+	// @ts-ignore
+	const changeCurrencyPurchase = (currency) => {
+		currencyPurchase = currency;
+	};
 </script>
 
 <div class="converter">
@@ -25,82 +48,111 @@
 	<p class="converter__text">
 		Check live rates, set rate alerts, receive notifications and more.
 	</p>
-	<ul class="converter__exchange">
-		<li class="converter__exchange-item">
+	<div class="converter__exchange">
+		<div class="converter__exchange-item">
 			<div class="converter__exchange-wrapper">
 				<div>
-					<button class="converter__exchange-currency">
-						<span>choose currency</span>
+					<button
+						class="converter__exchange-currency"
+						on:click={() => openDropDownSale()}
+					>
+						<span class="converter__exchange-currency__text"
+							>{currencySale}</span
+						>
 						<div class="icon"></div>
 					</button>
-					<ul class="converter__exchange-dropdown">
-						<li class="converter__exchange-dropdown-item">
-							<img
-								src={poland}
-								alt="poland"
-								height="30"
-								width="30"
-							/>
-							<span>PLZ</span>
-						</li>
-						<li class="converter__exchange-dropdown-item">
-							<img
-								src={switzerland}
-								alt="switzerland"
-								height="30"
-								width="30"
-							/>
-							<span>CHF</span>
-						</li>
-						<li class="converter__exchange-dropdown-item">
-							<img
-								src={europeanUnion}
-								alt="europeanUnion"
-								height="30"
-								width="30"
-							/>
-							<span>EUR</span>
-						</li>
-					</ul>
+					{#if dropDownSale}
+						<ul class="converter__exchange__dropdown">
+							{#each currencesForSale as item (item.id)}
+								<li class="converter__exchange__dropdown-item">
+									<button
+										on:click={() =>
+											changeCurrencySale(item.name)}
+										class="converter__exchange__dropdown-button"
+									>
+										<img
+											src={item.img}
+											alt={item.name}
+											height="30"
+											width="30"
+										/>
+										<span>{item.name}</span>
+									</button>
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</div>
 				<div class="converter__exchange-info">
-					<label class="converter__exchange-labels" for="amount">
+					<label class="converter__exchange-labels" for="amountPut">
 						Amount
 					</label>
 					<input
-						id="amount"
-						name="amount"
+						id="amountPut"
+						name="amountPut"
 						type="text"
 						class="converter__exchange-input"
 						placeholder="1000.00"
 					/>
 				</div>
 			</div>
-		</li>
-	</ul>
-	<!-- <button on:click={() => (count -= 1)} aria-label="Decrease the counter by one">
-		<svg aria-hidden="true" viewBox="0 0 1 1">
-			<path d="M0,0.5 L1,0.5" />
-		</svg>
-	</button>
-
-	<div class="counter-viewport">
-		<div class="counter-digits" style="transform: translate(0, {100 * offset}%)">
-			<strong class="hidden" aria-hidden="true">{Math.floor($displayed_count + 1)}</strong>
-			<strong>{Math.floor($displayed_count)}</strong>
+			<div class="converter__line"></div>
+			<button class="converter__button"></button>
+			<div class="converter__exchange-wrapper">
+				<div>
+					<button
+						class="converter__exchange-currency"
+						on:click={() => openDropDownPurchase()}
+					>
+						<span class="converter__exchange-currency__text"
+							>{currencyPurchase}</span
+						>
+						<div class="icon"></div>
+					</button>
+					{#if dropDownPurchase}
+						<ul class="converter__exchange-dropdown">
+							{#each currencesForPurchase as item (item.id)}
+								<li class="converter__exchange__dropdown-item">
+									<button
+										on:click={() =>
+											changeCurrencyPurchase(item.name)}
+										class="converter__exchange__dropdown-button"
+									>
+										<img
+											src={item.img}
+											alt={item.name}
+											height="30"
+											width="30"
+										/>
+										<span>{item.name}</span>
+									</button>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
+				<div class="converter__exchange-info">
+					<label class="converter__exchange-labels" for="amountGet">
+						Amount
+					</label>
+					<input
+						id="amountGet"
+						name="amountGet"
+						type="text"
+						class="converter__exchange-input"
+						placeholder="1000.00"
+					/>
+				</div>
+			</div>
 		</div>
 	</div>
-
-	<button on:click={() => (count += 1)} aria-label="Increase the counter by one">
-		<svg aria-hidden="true" viewBox="0 0 1 1">
-			<path d="M0,0.5 L1,0.5 M0.5,0 L0.5,1" />
-		</svg>
-	</button> -->
 </div>
 
 <style lang="scss">
-	@import '/src/scss/base.scss';
 	@import '/src/scss/reset.scss';
+	.converter {
+		font-family: 'Roboto', sans-serif;
+	}
 	.converter__title {
 		color: #1f2261;
 		font-weight: 700;
@@ -115,9 +167,10 @@
 	}
 	.converter__exchange {
 		background: #ffffff;
-		padding: 10px;
+		padding: 20px;
 		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 		border-radius: 10px;
+		position: relative;
 	}
 	.converter__exchange-labels {
 		color: #989898;
@@ -142,30 +195,33 @@
 		color: #26278d;
 		font-weight: 700;
 		font-size: 14px;
-		width: 123px;
+		width: 133px;
 		height: 45px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		cursor: pointer;
+		border: 1px solid #26278d;
+		margin-bottom: 5px;
+		border-radius: 5px;
+		padding: 7px;
 	}
-	.converter__exchange-dropdown-item {
+	.converter__exchange__dropdown {
+		margin-bottom: -5px;
+	}
+	.converter__exchange__dropdown-item {
 		background: transparent;
-		border: none;
-		color: #26278d;
-		font-weight: 700;
-		font-size: 14px;
-		width: 123px;
+		width: 133px;
 		height: 45px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
 		cursor: pointer;
 		box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 		padding: 5px;
-		padding-right: 38px;
-		border: 5px;
 		margin-bottom: 5px;
+		border-radius: 5px;
+		border: 1px solid transparent;
+	}
+	.converter__exchange__dropdown-item:hover {
+		border: 1px solid #26278d;
 	}
 	.icon {
 		width: 11px;
@@ -177,11 +233,49 @@
 	.converter__exchange-wrapper {
 		display: flex;
 		justify-content: space-between;
+		min-height: 200px;
+	}
+	.converter__exchange-wrapper:first-child {
 		margin-bottom: 32px;
 	}
 	.converter__exchange-info {
 		display: flex;
 		flex-direction: column;
-		padding-top: 10px;
+	}
+	.converter__button {
+		background-color: #26278d;
+		width: 44px;
+		height: 44px;
+		background-image: url('/src/lib/images/exchange.svg');
+		background-position: center;
+		background-repeat: no-repeat;
+		border-radius: 50%;
+		border: none;
+		cursor: pointer;
+		position: relative;
+		z-index: 100;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	.converter__line {
+		height: 2px;
+		background: #e7e7ee;
+	}
+	.converter__exchange-currency__text {
+		max-width: 98px;
+		min-width: 98px;
+	}
+	.converter__exchange__dropdown-button {
+		background: transparent;
+		cursor: pointer;
+		border: none;
+		padding-right: 38px;
+		color: #26278d;
+		font-weight: 700;
+		font-size: 14px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
 	}
 </style>

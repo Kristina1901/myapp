@@ -2,15 +2,15 @@
 	font-family: 'Roboto';
 	src:
 		local(''),
-		url('./lib/fonts/Roboto-Regular.woff2') format('woff2'),
-		url('./lib/fonts/Roboto-Regular.woff') format('woff');
+		url('/lib/fonts/Roboto-Regular.woff2') format('woff2'),
+		url('/lib/fonts/Roboto-Regular.woff') format('woff');
 	font-weight: 400;
 }
 @font-face {
 	font-family: 'Roboto';
 	src:
 		local(''),
-		url('./lib/fonts/Roboto-Bold.woff2') format('woff2'),
-		url('./lib/fonts/Roboto-Bold.woff') format('woff');
+		url('/lib/fonts/Roboto-Bold.woff2') format('woff2'),
+		url('/lib/fonts/Roboto-Bold.woff') format('woff');
 	font-weight: 700;
 }
