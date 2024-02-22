@@ -217,6 +217,7 @@
 						Amount
 					</label>
 					<input
+						readonly
 						id="amountGet"
 						name="amountGet"
 						class="converter__exchange-input"
