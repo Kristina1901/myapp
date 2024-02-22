@@ -1,46 +1,111 @@
-<script>
+<script lang="js">
+	// @ts-nocheck
+	import { onMount } from 'svelte';
 	import poland from '$lib/images/poland.png';
 	import europeanUnion from '$lib/images/european-union.png';
 	import switzerland from '$lib/images/switzerland.png';
 	let dropDownSale = false;
 	let dropDownPurchase = false;
-	let currencySale = 'choose currency';
+	let currencySale = '';
+	let currentCourses = null;
+	let currencyPurchase = '';
+	let hasFetched = false;
+	let mainCurrency = 'EUR';
+	/**
+	 * @type {number}
+	 */
+	let sumForPut = '';
 	// @ts-ignore
-	let prevCurrencySale;
-	let currencyPurchase = 'choose currency';
-	let currencesForSale = [
-		{ id: 1, name: 'PLZ', img: poland, alt: '$lib/images/poland.png' },
-		{ id: 2, name: 'CHF', img: europeanUnion, alt: 'europeanUnion' },
-		{ id: 3, name: 'EUR', img: switzerland, alt: 'switzerland' },
+	let sumForGet = '';
+	const currencesForSale = [
+		{ id: 1, name: 'PLN', img: poland, alt: 'Poland' },
+		{ id: 2, name: 'EUR', img: europeanUnion, alt: 'European Union' },
+		{ id: 3, name: 'CHF', img: switzerland, alt: 'Switzerland' },
 	];
-	let currencesForPurchase = [
-		{ id: 4, name: 'PLZ', img: poland, alt: '$lib/images/poland.png' },
-		{ id: 5, name: 'CHF', img: europeanUnion, alt: 'europeanUnion' },
-		{ id: 6, name: 'EUR', img: switzerland, alt: 'switzerland' },
+	const currencesForPurchase = [
+		{ id: 4, name: 'PLN', img: poland, alt: 'Poland' },
+		{ id: 5, name: 'EUR', img: europeanUnion, alt: 'European Union' },
+		{ id: 6, name: 'CHF', img: switzerland, alt: 'Switzerland' },
 	];
-	// @ts-ignore
+	function load() {
+		const url = `https://currency-conversion-and-exchange-rates.p.rapidapi.com/latest?from=USD&to=EUR%2CGBP`;
+		const options = {
+			method: 'GET',
+			headers: {
+				'X-RapidAPI-Key': `36f9cbb627msha6f92731e797aeap104677jsn1653ead11c41`,
+				'X-RapidAPI-Host':
+					'currency-conversion-and-exchange-rates.p.rapidapi.com',
+			},
+		};
+		fetch(url, options)
+			.then((response) => response.json())
+			.then((result) => {
+				const { PLN, CHF, EUR } = result.rates;
+				currentCourses = { PLN, CHF, EUR };
+				hasFetched = true;
+			})
+			.catch((error) => console.error(error));
+	}
+	function openDropDownSale() {
+		dropDownSale = !dropDownSale;
+	}
+	function openDropDownPurchase() {
+		dropDownPurchase = !dropDownPurchase;
+	}
+	/**
+	 * @param {string} param
+	 */
+	function changeCurrencySale(param) {
+		currencySale = param;
+		dropDownSale = !dropDownSale;
+	}
+	/**
+	 * @param {string} currency
+	 */
+	function changeCurrencyPurchase(currency) {
+		currencyPurchase = currency;
+		dropDownPurchase = !dropDownPurchase;
+	}
+
+	function changeCurrencySaleToPurchase() {
+		const tempCurrency = currencySale;
+		currencySale = currencyPurchase;
+		currencyPurchase = tempCurrency;
+	}
+	function validateInput(event) {
+		const input = event.target;
+		const inputValue = input.value;
+		const regex = /^\d*\.?\d*$/;
+		if (!regex.test(inputValue)) {
+			input.value = inputValue.replace(/[^\d.]/g, '');
+		}
+	}
 	// @ts-ignore
 	$: {
-		// @ts-ignore
-		if (prevCurrencySale && prevCurrencySale !== currencySale) {
-			dropDownSale = false;
+		if (currencySale && currencyPurchase && (sumForGet || sumForPut)) {
+			if (currencySale === mainCurrency) {
+				sumForGet = (
+					sumForPut * currentCourses[currencyPurchase]
+				).toFixed(2);
+			}
+			if (currencySale !== mainCurrency) {
+				sumForGet = (
+					sumForPut *
+					(currentCourses[currencyPurchase] /
+						currentCourses[currencySale])
+				).toFixed(2);
+			}
+			if (currencyPurchase === mainCurrency) {
+				sumForGet = (
+					sumForPut *
+					(1 / Number(currentCourses[currencySale]))
+				).toFixed(2);
+			}
 		}
-		prevCurrencySale = currencySale;
 	}
-	const openDropDownSale = () => {
-		dropDownSale = !dropDownSale;
-	};
-	const openDropDownPurchase = () => {
-		dropDownPurchase = !dropDownPurchase;
-	};
-	// @ts-ignore
-	const changeCurrencySale = (param) => {
-		currencySale = param;
-	};
-	// @ts-ignore
-	const changeCurrencyPurchase = (currency) => {
-		currencyPurchase = currency;
-	};
+	onMount(() => {
+		load();
+	});
 </script>
 
 <div class="converter">
@@ -56,9 +121,15 @@
 						class="converter__exchange-currency"
 						on:click={() => openDropDownSale()}
 					>
-						<span class="converter__exchange-currency__text"
-							>{currencySale}</span
-						>
+						{#if currencySale === ''}
+							<span class="converter__exchange-currency__text"
+								>choose currency</span
+							>
+						{:else}
+							<span class="converter__exchange-currency__text"
+								>{currencySale}</span
+							>
+						{/if}
 						<div class="icon"></div>
 					</button>
 					{#if dropDownSale}
@@ -90,23 +161,33 @@
 					<input
 						id="amountPut"
 						name="amountPut"
-						type="text"
 						class="converter__exchange-input"
-						placeholder="1000.00"
+						placeholder="0"
+						on:input={validateInput}
+						bind:value={sumForPut}
 					/>
 				</div>
 			</div>
 			<div class="converter__line"></div>
-			<button class="converter__button"></button>
+			<button
+				class="converter__button"
+				on:click={() => changeCurrencySaleToPurchase()}
+			></button>
 			<div class="converter__exchange-wrapper">
 				<div>
 					<button
 						class="converter__exchange-currency"
 						on:click={() => openDropDownPurchase()}
 					>
-						<span class="converter__exchange-currency__text"
-							>{currencyPurchase}</span
-						>
+						{#if currencyPurchase === ''}
+							<span class="converter__exchange-currency__text"
+								>choose currency</span
+							>
+						{:else}
+							<span class="converter__exchange-currency__text"
+								>{currencyPurchase}</span
+							>
+						{/if}
 						<div class="icon"></div>
 					</button>
 					{#if dropDownPurchase}
@@ -138,9 +219,10 @@
 					<input
 						id="amountGet"
 						name="amountGet"
-						type="text"
 						class="converter__exchange-input"
-						placeholder="1000.00"
+						placeholder="0"
+						on:input={validateInput}
+						bind:value={sumForGet}
 					/>
 				</div>
 			</div>
@@ -202,9 +284,8 @@
 		justify-content: space-between;
 		cursor: pointer;
 		border: 1px solid #26278d;
-		margin-bottom: 5px;
 		border-radius: 5px;
-		padding: 7px;
+		padding: 10px;
 	}
 	.converter__exchange__dropdown {
 		margin-bottom: -5px;
@@ -256,14 +337,22 @@
 		z-index: 100;
 		left: 50%;
 		transform: translate(-50%, -50%);
+		-webkit-transition: background-color 1000ms linear;
+		-ms-transition: background-color 1000ms linear;
+		transition: background-color 1000ms linear;
+	}
+	.converter__button:hover,
+	.converter__button:focus,
+	.converter__button:active {
+		background-color: black;
 	}
 	.converter__line {
 		height: 2px;
 		background: #e7e7ee;
 	}
 	.converter__exchange-currency__text {
-		max-width: 98px;
-		min-width: 98px;
+		max-width: 90px;
+		min-width: 90px;
 	}
 	.converter__exchange__dropdown-button {
 		background: transparent;

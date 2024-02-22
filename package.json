@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@fontsource/roboto": "^5.0.8"
+		"@fontsource/roboto": "^5.0.8",
+		"dotenv": "^16.4.5"
 	}
 }

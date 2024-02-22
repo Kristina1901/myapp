@@ -1,6 +1,5 @@
 <script>
-	import Counter from './Counter.svelte';
-	
+	import Converter from './Converter.svelte';
 </script>
 
 <svelte:head>
@@ -9,7 +8,7 @@
 </svelte:head>
 
 <section>
-<Counter />
+	<Converter />
 </section>
 
 <style>
@@ -20,5 +19,4 @@
 		align-items: center;
 		flex: 0.6;
 	}
-
 </style>
