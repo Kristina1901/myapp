@@ -28,19 +28,21 @@
 		{ id: 6, name: 'CHF', img: switzerland, alt: 'Switzerland' },
 	];
 	function load() {
-		const url = `https://currency-conversion-and-exchange-rates.p.rapidapi.com/latest?from=USD&to=EUR%2CGBP`;
+		const url =
+			'https://currency-converter-pro1.p.rapidapi.com/latest-rates?base=EUR';
 		const options = {
 			method: 'GET',
 			headers: {
-				'X-RapidAPI-Key': `36f9cbb627msha6f92731e797aeap104677jsn1653ead11c41`,
-				'X-RapidAPI-Host':
-					'currency-conversion-and-exchange-rates.p.rapidapi.com',
+				'X-RapidAPI-Key':
+					'36f9cbb627msha6f92731e797aeap104677jsn1653ead11c41',
+				'X-RapidAPI-Host': 'currency-converter-pro1.p.rapidapi.com',
 			},
 		};
+
 		fetch(url, options)
 			.then((response) => response.json())
-			.then((result) => {
-				const { PLN, CHF, EUR } = result.rates;
+			.then((data) => {
+				const { PLN, CHF, EUR } = data.result;
 				currentCourses = { PLN, CHF, EUR };
 				hasFetched = true;
 			})
@@ -217,7 +219,6 @@
 						Amount
 					</label>
 					<input
-						readonly
 						id="amountGet"
 						name="amountGet"
 						class="converter__exchange-input"
