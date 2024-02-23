@@ -9,7 +9,6 @@
 	let currencySale = '';
 	let currentCourses = null;
 	let currencyPurchase = '';
-	let hasFetched = false;
 	let mainCurrency = 'EUR';
 	/**
 	 * @type {number}
@@ -44,7 +43,6 @@
 			.then((data) => {
 				const { PLN, CHF, EUR } = data.result;
 				currentCourses = { PLN, CHF, EUR };
-				hasFetched = true;
 			})
 			.catch((error) => console.error(error));
 	}
@@ -84,7 +82,7 @@
 	}
 	// @ts-ignore
 	$: {
-		if (currencySale && currencyPurchase && (sumForGet || sumForPut)) {
+		if (currencySale && currencyPurchase && sumForPut) {
 			if (currencySale === mainCurrency) {
 				sumForGet = (
 					sumForPut * currentCourses[currencyPurchase]
@@ -219,6 +217,7 @@
 						Amount
 					</label>
 					<input
+						readonly
 						id="amountGet"
 						name="amountGet"
 						class="converter__exchange-input"
