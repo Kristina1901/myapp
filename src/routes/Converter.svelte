@@ -80,12 +80,10 @@
 			currencySale = currencyPurchase;
 			currencyPurchase = tempCurrency;
 			const tempSunGet = sumForGet;
+			sumForPut = tempSunGet;
 			if (currencySale === mainCurrency) {
 				sumForGet = (
 					sumForPut * currentCourses[currencyPurchase]
-				).toFixed(2);
-				sumForPut = (
-					tempSunGet / currentCourses[currencyPurchase]
 				).toFixed(2);
 			}
 			if (currencySale !== mainCurrency) {
@@ -94,19 +92,10 @@
 					(currentCourses[currencyPurchase] /
 						currentCourses[currencySale])
 				).toFixed(2);
-				sumForPut = (
-					tempSunGet /
-					(currentCourses[currencyPurchase] /
-						currentCourses[currencySale])
-				).toFixed(2);
 			}
 			if (currencyPurchase === mainCurrency) {
 				sumForGet = (
 					sumForPut *
-					(1 / Number(currentCourses[currencySale]))
-				).toFixed(2);
-				sumForPut = (
-					tempSunGet /
 					(1 / Number(currentCourses[currencySale]))
 				).toFixed(2);
 			}
