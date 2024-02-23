@@ -75,13 +75,44 @@
 	}
 
 	function changeCurrencySaleToPurchase() {
-		const tempCurrency = currencySale;
-		currencySale = currencyPurchase;
-		currencyPurchase = tempCurrency;
-		const tempSunGet = sumForGet;
-		sumForGet = sumForPut;
-		sumForPut = tempSunGet;
-		changeTrigger();
+		if (currencySale && currencyPurchase) {
+			const tempCurrency = currencySale;
+			currencySale = currencyPurchase;
+			currencyPurchase = tempCurrency;
+			const tempSunGet = sumForGet;
+			if (currencySale === mainCurrency) {
+				sumForGet = (
+					sumForPut * currentCourses[currencyPurchase]
+				).toFixed(2);
+				sumForPut = (
+					tempSunGet / currentCourses[currencyPurchase]
+				).toFixed(2);
+			}
+			if (currencySale !== mainCurrency) {
+				sumForGet = (
+					sumForPut *
+					(currentCourses[currencyPurchase] /
+						currentCourses[currencySale])
+				).toFixed(2);
+				sumForPut = (
+					tempSunGet /
+					(currentCourses[currencyPurchase] /
+						currentCourses[currencySale])
+				).toFixed(2);
+			}
+			if (currencyPurchase === mainCurrency) {
+				sumForGet = (
+					sumForPut *
+					(1 / Number(currentCourses[currencySale]))
+				).toFixed(2);
+				sumForPut = (
+					tempSunGet /
+					(1 / Number(currentCourses[currencySale]))
+				).toFixed(2);
+			}
+
+			changeTrigger();
+		}
 	}
 	function validateInput(event) {
 		const input = event.target;
