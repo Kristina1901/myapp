@@ -37,7 +37,6 @@
 				'X-RapidAPI-Host': 'currency-converter-pro1.p.rapidapi.com',
 			},
 		};
-
 		fetch(url, options)
 			.then((response) => response.json())
 			.then((data) => {
@@ -301,6 +300,9 @@
 		margin-bottom: 5px;
 		border-radius: 5px;
 		border: 1px solid transparent;
+	}
+	.converter__exchange__dropdown-item:first-child {
+		margin-top: 5px;
 	}
 	.converter__exchange__dropdown-item:hover {
 		border: 1px solid #26278d;
