@@ -10,6 +10,7 @@
 	let currentCourses = null;
 	let currencyPurchase = '';
 	let mainCurrency = 'EUR';
+	let trigger = false;
 	/**
 	 * @type {number}
 	 */
@@ -52,6 +53,12 @@
 	function openDropDownPurchase() {
 		dropDownPurchase = !dropDownPurchase;
 	}
+	function changeTrigger() {
+		trigger = true;
+	}
+	function changeTrigger1() {
+		trigger = false;
+	}
 	/**
 	 * @param {string} param
 	 */
@@ -74,6 +81,7 @@
 		const tempSunGet = sumForGet;
 		sumForGet = sumForPut;
 		sumForPut = tempSunGet;
+		changeTrigger();
 	}
 	function validateInput(event) {
 		const input = event.target;
@@ -131,7 +139,7 @@
 		load();
 	});
 	$: {
-		if (currencySale || currencyPurchase) {
+		if ((currencySale || currencyPurchase) && !trigger) {
 			sumForGet = 0;
 			sumForPut = 0;
 		}
@@ -167,8 +175,10 @@
 							{#each currencesForSale as item (item.id)}
 								<li class="converter__exchange__dropdown-item">
 									<button
-										on:click={() =>
-											changeCurrencySale(item.name)}
+										on:click={() => {
+											changeCurrencySale(item.name);
+											changeTrigger1();
+										}}
 										class="converter__exchange__dropdown-button"
 									>
 										<img
