@@ -44,6 +44,7 @@
 				currentCourses = { PLN, CHF, EUR };
 			})
 			.catch((error) => console.error(error));
+		return (currentCourses = { PLN: 69, CHF: 67, EUR: 90 });
 	}
 	function openDropDownSale() {
 		dropDownSale = !dropDownSale;
@@ -70,6 +71,9 @@
 		const tempCurrency = currencySale;
 		currencySale = currencyPurchase;
 		currencyPurchase = tempCurrency;
+		const tempSunGet = sumForGet;
+		sumForGet = sumForPut;
+		sumForPut = tempSunGet;
 	}
 	function validateInput(event) {
 		const input = event.target;
@@ -79,28 +83,51 @@
 			input.value = inputValue.replace(/[^\d.]/g, '');
 		}
 	}
-	// @ts-ignore
-	$: {
-		if (currencySale && currencyPurchase && sumForPut) {
+	function handlerSumForGet(event) {
+		if (currencySale && currencyPurchase) {
 			if (currencySale === mainCurrency) {
 				sumForGet = (
-					sumForPut * currentCourses[currencyPurchase]
+					event.currentTarget.value * currentCourses[currencyPurchase]
 				).toFixed(2);
 			}
 			if (currencySale !== mainCurrency) {
 				sumForGet = (
-					sumForPut *
+					event.currentTarget.value *
 					(currentCourses[currencyPurchase] /
 						currentCourses[currencySale])
 				).toFixed(2);
 			}
 			if (currencyPurchase === mainCurrency) {
 				sumForGet = (
-					sumForPut *
+					event.currentTarget.value *
 					(1 / Number(currentCourses[currencySale]))
 				).toFixed(2);
 			}
 		}
+		console.log(sumForGet);
+	}
+	function handlerSumForPut(event) {
+		if (currencySale && currencyPurchase) {
+			if (currencySale === mainCurrency) {
+				sumForPut = (
+					event.currentTarget.value / currentCourses[currencyPurchase]
+				).toFixed(2);
+			}
+			if (currencySale !== mainCurrency) {
+				sumForPut = (
+					event.currentTarget.value /
+					(currentCourses[currencyPurchase] /
+						currentCourses[currencySale])
+				).toFixed(2);
+			}
+			if (currencyPurchase === mainCurrency) {
+				sumForPut = (
+					event.currentTarget.value /
+					(1 / Number(currentCourses[currencySale]))
+				).toFixed(2);
+			}
+		}
+		console.log(sumForPut);
 	}
 	onMount(() => {
 		load();
@@ -159,10 +186,14 @@
 					</label>
 					<input
 						id="amountPut"
+						type="text"
 						name="amountPut"
 						class="converter__exchange-input"
 						placeholder="0"
-						on:input={validateInput}
+						on:input={(event) => {
+							validateInput(event);
+							handlerSumForGet(event);
+						}}
 						bind:value={sumForPut}
 					/>
 				</div>
@@ -216,12 +247,15 @@
 						Amount
 					</label>
 					<input
-						readonly
 						id="amountGet"
+						type="text"
 						name="amountGet"
 						class="converter__exchange-input"
 						placeholder="0"
-						on:input={validateInput}
+						on:input={(event) => {
+							validateInput(event);
+							handlerSumForPut(event);
+						}}
 						bind:value={sumForGet}
 					/>
 				</div>
