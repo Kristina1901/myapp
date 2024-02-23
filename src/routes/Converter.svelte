@@ -104,7 +104,6 @@
 				).toFixed(2);
 			}
 		}
-		console.log(sumForGet);
 	}
 	function handlerSumForPut(event) {
 		if (currencySale && currencyPurchase) {
@@ -132,6 +131,12 @@
 	onMount(() => {
 		load();
 	});
+	$: {
+		if (currencySale || currencyPurchase) {
+			sumForGet = 0;
+			sumForPut = 0;
+		}
+	}
 </script>
 
 <div class="converter">
