@@ -126,7 +126,6 @@
 				).toFixed(2);
 			}
 		}
-		console.log(sumForPut);
 	}
 	onMount(() => {
 		load();
