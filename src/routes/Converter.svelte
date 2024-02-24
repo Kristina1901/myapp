@@ -45,7 +45,6 @@
 				currentCourses = { PLN, CHF, EUR };
 			})
 			.catch((error) => console.error(error));
-		return (currentCourses = { PLN: 69, CHF: 67, EUR: 90 });
 	}
 	function openDropDownSale() {
 		dropDownSale = !dropDownSale;
