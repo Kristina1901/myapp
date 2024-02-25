@@ -55,7 +55,7 @@
 	function changeTrigger() {
 		trigger = true;
 	}
-	function changeTrigger1() {
+	function changeTriggerInput() {
 		trigger = false;
 	}
 	/**
@@ -196,7 +196,7 @@
 									<button
 										on:click={() => {
 											changeCurrencySale(item.name);
-											changeTrigger1();
+											changeTriggerInput();
 										}}
 										class="converter__exchange__dropdown-button"
 									>
